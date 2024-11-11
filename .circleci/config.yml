@@ -16,7 +16,6 @@ jobs:
       - image: sonarsource/sonar-scanner-cli
     steps:
       - checkout
-      - run: find .  # Windows-compatible command for listing files
       - attach_workspace:
           at: ~/workspace
       - run: |
