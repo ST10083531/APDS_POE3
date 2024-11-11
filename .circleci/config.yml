@@ -10,28 +10,33 @@ jobs:
           name: "Say hello"
           command: "echo Hello, World!"
 
-  sonarqube:
+    sonarqube:
     working_directory: ~/build
     docker:
       - image: sonarsource/sonar-scanner-cli
     steps:
       - checkout
-      - run: apk update
-      - run: apk add --no-cache curl git openssh
-      - run: curl -sSfL https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip -o sonar-scanner.zip
-      - run: unzip sonar-scanner.zip
-      - run: mv sonar-scanner-4.6.2.2472-linux /usr/local/sonar-scanner
+      - run: find .
+      - attach_workspace:
+          at: ~/workspace
       - run: |
-          export PATH=$PATH:/usr/local/sonar-scanner/bin
           SONAR_BRANCH="${CIRCLE_BRANCH:-master}"
+          echo "Sonar branch value is: $SONAR_BRANCH"
+          echo "Sonar org value is: $SONAR_ORG"
           sonar-scanner \
-          -Dsonar.projectKey="$SONAR_PROJECT_KEY" \
-          -Dsonar.organization="$SONAR_ORG" \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.exclusions="**/android/**,**/ios/**" \
-          -Dsonar.login="$SONAR_TOKEN" \
-          -Dsonar.branch.name="$SONAR_BRANCH" \
-          -Dsonar.sources="."
+            -Dsonar.projectKey="$SONAR_PROJECT_KEY" \
+            -Dsonar.organization="$SONAR_ORG" \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.exclusions="**/android/**,**/ios/**" \
+            -Dsonar.login="$SONAR_TOKEN" \
+            -Dsonar.branch.name="$SONAR_BRANCH" \
+            -Dsonar.sources="."
+
+workflows:
+  say-hello-workflow:
+    jobs:
+      - say-hello
+      - sonarqube
 
 workflows:
   say-hello-workflow:
