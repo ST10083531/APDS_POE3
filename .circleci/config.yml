@@ -13,7 +13,7 @@ jobs:
   sonarqube:
     working_directory: ~/build
     docker:
-      - image: cimg/base:stable  # Alpine-compatible image
+      - image: sonarsource/sonar-scanner-cli
     steps:
       - checkout
       - run: apk update
