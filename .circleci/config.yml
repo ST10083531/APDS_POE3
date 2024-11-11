@@ -10,13 +10,13 @@ jobs:
           name: "Say hello"
           command: "echo Hello, World!"
 
-    sonarqube:
+  sonarqube:
     working_directory: ~/build
     docker:
       - image: sonarsource/sonar-scanner-cli
     steps:
       - checkout
-      - run: find .
+      - run: find .  # Windows-compatible command for listing files
       - attach_workspace:
           at: ~/workspace
       - run: |
@@ -31,12 +31,6 @@ jobs:
             -Dsonar.login="$SONAR_TOKEN" \
             -Dsonar.branch.name="$SONAR_BRANCH" \
             -Dsonar.sources="."
-
-workflows:
-  say-hello-workflow:
-    jobs:
-      - say-hello
-      - sonarqube
 
 workflows:
   say-hello-workflow:
